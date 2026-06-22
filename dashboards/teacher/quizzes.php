@@ -1,16 +1,21 @@
 <?php
 require_once '../../core/session.php';
-checkRole('teacher');
+checkRole(['teacher', 'admin']);
 require_once '../../core/db.php';
 require_once '../../includes/header.php';
 
 $teacher_id = $_SESSION['user_id'];
 $course_id = $_GET['course_id'] ?? 0;
 
-// Fetch Teacher's Courses
-$course_stmt = $pdo->prepare("SELECT * FROM courses WHERE teacher_id = ?");
-$course_stmt->execute([$teacher_id]);
-$my_courses = $course_stmt->fetchAll();
+// Fetch Courses: Admins see all, teachers see theirs
+if ($_SESSION['role'] === 'super_admin' || $_SESSION['role'] === 'admin') {
+    $course_stmt = $pdo->query("SELECT * FROM courses");
+    $my_courses = $course_stmt->fetchAll();
+} else {
+    $course_stmt = $pdo->prepare("SELECT * FROM courses WHERE teacher_id = ?");
+    $course_stmt->execute([$teacher_id]);
+    $my_courses = $course_stmt->fetchAll();
+}
 
 // If no course selected, and teacher has courses, default to first one or show selector
 if ($course_id == 0 && !empty($my_courses)) {

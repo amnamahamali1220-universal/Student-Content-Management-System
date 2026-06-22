@@ -26,7 +26,7 @@ if (!$student) {
 // Fetch Courses and Grades
 $sql = "SELECT c.id as course_id, c.course_code, c.title as course_title,
             (SELECT AVG(grade) FROM submissions s JOIN assignments a ON s.assignment_id = a.id WHERE a.course_id = c.id AND s.student_id = ?) as avg_assignment,
-            (SELECT AVG(score) FROM quiz_attempts qa JOIN quizzes q ON qa.quiz_id = q.id WHERE q.course_id = c.id AND qa.student_id = ?) as avg_quiz,
+            (SELECT AVG(quiz_marks) FROM quiz_attempts qa JOIN quizzes q ON qa.quiz_id = q.id WHERE q.course_id = c.id AND qa.student_id = ?) as avg_quiz,
             (SELECT COUNT(*) FROM attendance WHERE course_id = c.id AND student_id = ? AND status IN ('present', 'late')) as present_count,
             (SELECT COUNT(*) FROM attendance WHERE course_id = c.id AND student_id = ?) as total_classes
         FROM enrollments e
@@ -127,7 +127,7 @@ $valid_courses = 0;
                 
                 // Quiz Mark (scaled to 5)
                 $avg_qui = $c['avg_quiz'] !== null ? $c['avg_quiz'] : 0;
-                $mark_qui = ($avg_qui / 100) * 5;
+                $mark_qui = $avg_qui;
                 
                 // Attendance Mark (scaled to 5)
                 $pres = $c['present_count'];

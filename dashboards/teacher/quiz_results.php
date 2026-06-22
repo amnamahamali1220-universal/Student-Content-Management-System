@@ -19,10 +19,10 @@ if (!$quiz) {
 // Handle Manual Grade Update
 if (isset($_POST['update_grade'])) {
     $attempt_id = $_POST['attempt_id'];
-    $new_score = $_POST['new_score'];
-    $stmt = $pdo->prepare("UPDATE quiz_attempts SET score = ? WHERE id = ?");
-    $stmt->execute([$new_score, $attempt_id]);
-    echo "<script>alert('Grade Updated');</script>";
+    $quiz_marks = $_POST['quiz_marks'];
+    $stmt = $pdo->prepare("UPDATE quiz_attempts SET quiz_marks = ? WHERE id = ?");
+    $stmt->execute([$quiz_marks, $attempt_id]);
+    echo "<script>alert('Marks Updated');</script>";
 }
 
 // Fetch Results
@@ -60,6 +60,7 @@ $results = $stmt->fetchAll();
                                 <th>Student Name</th>
                                 <th>Reg No</th>
                                 <th>Score (%)</th>
+                                <th>Marks (5)</th>
                                 <th>Attempted At</th>
                                 <th>Actions</th>
                             </tr>
@@ -72,6 +73,11 @@ $results = $stmt->fetchAll();
                                 <td>
                                     <span class="badge bg-<?= $r['score'] >= 50 ? 'success' : 'danger' ?>">
                                         <?= number_format($r['score'], 1) ?>%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-primary">
+                                        <?= number_format($r['quiz_marks'], 1) ?> / 5
                                     </span>
                                 </td>
                                 <td><?= date('M d, Y h:i A', strtotime($r['attempted_at'])) ?></td>
@@ -90,8 +96,8 @@ $results = $stmt->fetchAll();
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
-                                                        <label class="form-label">Score (%)</label>
-                                                        <input type="number" step="0.1" name="new_score" class="form-control" value="<?= $r['score'] ?>" required>
+                                                        <label class="form-label">Assign Marks (Max 5)</label>
+                                                        <input type="number" step="0.1" name="quiz_marks" class="form-control" value="<?= $r['quiz_marks'] ?>" min="0" max="5" required>
                                                     </div>
                                                     <input type="hidden" name="attempt_id" value="<?= $r['id'] ?>">
                                                 </div>

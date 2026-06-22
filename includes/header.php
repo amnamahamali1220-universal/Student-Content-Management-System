@@ -23,11 +23,12 @@ $pageTitle = $currentPageData['page_name'] ?? 'Dashboard';
 $pageId = $currentPageData['id'] ?? 0;
 
 // 3. Security Access Check (The Gatekeeper)
-if ($pageId > 0) {
+// Role-Based Access Control (RBAC) Bypass for super_admin
+if ($pageId > 0 && $_SESSION['role'] !== 'super_admin') {
     $accessStmt = $pdo->prepare("SELECT * FROM role_access WHERE role_key = ? AND page_id = ?");
     $accessStmt->execute([$_SESSION['role'], $pageId]);
     if ($accessStmt->rowCount() == 0) {
-        die('<div class="alert alert-danger m-5">⛔ Access Denied: You do not have permission to view this page.</div>');
+        die('<div class="alert alert-danger m-5">⛔ Access Denied: You do not have permission to view this page. Please contact the administrator.</div>');
     }
 }
 

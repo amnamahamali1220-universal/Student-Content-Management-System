@@ -12,20 +12,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $course_id = $_POST['course_id'];
     $title = $_POST['title'];
 
-    $stmt = $pdo->prepare("INSERT INTO quizzes (course_id, title) VALUES (?, ?)");
-    if ($stmt->execute([$course_id, $title])) {
-        $quiz_id = $pdo->lastInsertId();
-        header("Location: edit_quiz.php?id=" . $quiz_id);
-        exit;
-    } else {
-        $error = "Failed to create quiz.";
+    try {
+        $stmt = $pdo->prepare("INSERT INTO quizzes (course_id, title) VALUES (?, ?)");
+        if ($stmt->execute([$course_id, $title])) {
+            $quiz_id = $pdo->lastInsertId();
+            header("Location: edit_quiz.php?id=" . $quiz_id);
+            exit;
+        } else {
+            $error = "Failed to create quiz.";
+        }
+    } catch (Exception $e) {
+        $error = "Database Error: " . $e->getMessage();
     }
 }
 
-// Fetch courses assigned to this teacher
-$stmt = $pdo->prepare("SELECT id, title, course_code FROM courses WHERE teacher_id = ?");
-$stmt->execute([$teacher_id]);
-$courses = $stmt->fetchAll();
+// Fetch courses: Admins see all, teachers see theirs
+if ($_SESSION['role'] === 'super_admin' || $_SESSION['role'] === 'admin') {
+    $courses = $pdo->query("SELECT id, title, course_code FROM courses")->fetchAll();
+} else {
+    $stmt = $pdo->prepare("SELECT id, title, course_code FROM courses WHERE teacher_id = ?");
+    $stmt->execute([$teacher_id]);
+    $courses = $stmt->fetchAll();
+}
 ?>
 
 <div class="app-content-header">

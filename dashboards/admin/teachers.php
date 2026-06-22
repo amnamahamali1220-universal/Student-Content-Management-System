@@ -3,7 +3,6 @@ require_once '../../core/session.php';
 checkRole('admin');
 require_once '../../core/db.php';
 require_once '../../includes/header.php';
-require_once '../../includes/sidebar.php';
 
 // Add Teacher
 if (isset($_POST['add_teacher'])) {

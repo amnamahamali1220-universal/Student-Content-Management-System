@@ -8,14 +8,15 @@ $student_id = $_SESSION['user_id'];
 
 // Fetch Quizzes from enrolled courses
 $sql = "SELECT q.*, c.title as course_title, c.course_code,
-            (SELECT score FROM quiz_attempts WHERE quiz_id = q.id AND student_id = ?) as my_score
+            (SELECT score FROM quiz_attempts WHERE quiz_id = q.id AND student_id = ? ORDER BY id DESC LIMIT 1) as my_score,
+            (SELECT quiz_marks FROM quiz_attempts WHERE quiz_id = q.id AND student_id = ? ORDER BY id DESC LIMIT 1) as my_marks
         FROM quizzes q
         JOIN courses c ON q.course_id = c.id
         JOIN enrollments e ON c.id = e.course_id
         WHERE e.student_id = ?
         ORDER BY q.created_at DESC";
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$student_id, $student_id]);
+$stmt->execute([$student_id, $student_id, $student_id]);
 $quizzes = $stmt->fetchAll();
 ?>
 
@@ -43,7 +44,8 @@ $quizzes = $stmt->fetchAll();
                             <?php if($q['my_score'] !== null): ?>
                                 <div class="text-end">
                                     <span class="badge bg-success">Completed</span>
-                                    <div class="h4 mt-1"><?= number_format($q['my_score'], 1) ?>%</div>
+                                    <div class="h5 mt-1 mb-0 text-primary"><?= number_format($q['my_marks'], 1) ?> / 5</div>
+                                    <div class="text-muted small"><?= number_format($q['my_score'], 1) ?>% Score</div>
                                 </div>
                             <?php endif; ?>
                         </div>

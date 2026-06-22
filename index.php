@@ -1,4 +1,18 @@
 <?php 
+require_once 'core/session.php';
+
+// Redirect non-super_admins to their specific dashboards
+if ($_SESSION['role'] === 'student') {
+    header("Location: dashboards/student/index.php");
+    exit;
+} elseif ($_SESSION['role'] === 'admin') {
+    header("Location: dashboards/admin/index.php");
+    exit;
+} elseif (in_array($_SESSION['role'], ['teacher', 'course_instructor', 'assignment_manager', 'exam_controller', 'senior_teacher'])) {
+    header("Location: dashboards/teacher/index.php");
+    exit;
+}
+
 require_once 'includes/header.php'; 
 require_once 'includes/visual_helper.php';
 ?>

@@ -31,19 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_material'])) {
         $filePath = 'uploads/' . $fileName;
     }
 
-    $stmt = $pdo->prepare("INSERT INTO course_materials (course_id, type, title, file_path) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO materials (course_id, type, title, file_path) VALUES (?, ?, ?, ?)");
     $stmt->execute([$courseId, $type, $title, $filePath]);
 }
 
 // Fetch Materials
-$materials = $pdo->prepare("SELECT * FROM course_materials WHERE course_id = ? ORDER BY created_at DESC");
+$materials = $pdo->prepare("SELECT * FROM materials WHERE course_id = ? ORDER BY uploaded_at DESC");
 $materials->execute([$courseId]);
 $materials = $materials->fetchAll();
 
 // Fetch Enrolled Students
 $students = $pdo->prepare("
     SELECT u.name, u.email, e.enrolled_at 
-    FROM student_enrollments e 
+    FROM enrollments e 
     JOIN users u ON e.student_id = u.id 
     WHERE e.course_id = ?
 ");

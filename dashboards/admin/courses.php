@@ -81,7 +81,7 @@ echo getChartScripts();
                                     <div class="modal-header"><h5 class="modal-title">Assign Teacher</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                                     <div class="modal-body">
                                         <p>Assign teacher for: <strong><?= htmlspecialchars($c['title']) ?></strong></p>
-                                        <select name="teacher_id" class="form-control">
+                                        <select name="teacher_id" class="form-control" required>
                                             <?php foreach($teachers as $t): ?>
                                             <option value="<?= $t['id'] ?>" <?= $c['teacher_id'] == $t['id'] ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($t['name']) ?>
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="mb-3"><label>Title</label><input type="text" name="title" class="form-control" required></div>
                 <div class="mb-3"><label>Code</label><input type="text" name="code" class="form-control" required></div>
                 <div class="mb-3"><label>Teacher</label>
-                    <select name="teacher_id" class="form-control">
+                    <select name="teacher_id" class="form-control" required>
                         <option value="">Select Teacher</option>
                         <?php foreach($teachers as $t): ?>
                         <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['name']) ?></option>

@@ -62,17 +62,17 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     
-    $pdo->exec("CREATE TABLE IF NOT EXISTS course_materials (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS materials (
         id INT AUTO_INCREMENT PRIMARY KEY,
         course_id INT NOT NULL,
         type ENUM('pdf', 'video', 'text', 'assignment') NOT NULL,
         title VARCHAR(255) NOT NULL,
         file_path VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
     )");
 
-    $pdo->exec("CREATE TABLE IF NOT EXISTS student_enrollments (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS enrollments (
         id INT AUTO_INCREMENT PRIMARY KEY,
         student_id INT NOT NULL,
         course_id INT NOT NULL,
@@ -80,7 +80,7 @@ try {
         FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
     )");
 
-    echo "Tables courses, course_materials, student_enrollments checked/created.<br>";
+    echo "Tables courses, materials, enrollments checked/created.<br>";
 
     // 2. Add Roles
     addRole($pdo, 'student', 'Student');

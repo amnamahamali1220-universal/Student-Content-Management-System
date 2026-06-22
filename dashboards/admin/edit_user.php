@@ -16,7 +16,7 @@ if (!$user) {
 $error = '';
 $success = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $role = $_POST['role'];
@@ -92,7 +92,7 @@ $roles = $pdo->query("SELECT * FROM sys_roles")->fetchAll();
                         </select>
                     </div>
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary">Update User Details</button>
+                        <button type="submit" name="update_user" class="btn btn-primary">Update User Details</button>
                     </div>
                 </form>
             </div>

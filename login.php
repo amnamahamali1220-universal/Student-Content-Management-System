@@ -13,19 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require_once __DIR__ . '/includes/activity_logger.php';
         logActivity($pdo, $_SESSION['user_id'], 'Logged in');
         
-        // Redirect based on role
-        if ($_SESSION['role'] === 'student') {
-            header("Location: dashboards/student/index.php");
-        } elseif ($_SESSION['role'] === 'teacher' || in_array($_SESSION['role'], ['course_instructor', 'assignment_manager', 'exam_controller', 'senior_teacher'])) {
-            header("Location: dashboards/teacher/index.php");
-        } elseif ($_SESSION['role'] === 'admin') {
-            header("Location: dashboards/admin/index.php");
-        } elseif ($_SESSION['role'] === 'super_admin') {
-            header("Location: index.php");
-        } else {
-            // Default fallback
-            header("Location: index.php");
-        }
+        // Redirect everyone to the main Dashboard
+        header("Location: index.php");
         exit;
     } else {
         $error = "Invalid Credentials or Account Suspended.";
